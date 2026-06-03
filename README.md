@@ -17,6 +17,8 @@ Hebrew RTL UI, a dark "nautical instrument" theme, and **only free, keyless, ope
 - **Route editor:** drag, click-to-insert, delete, rename, edit type/VHF, new / reset / extend-to-Poleg.
 - 12 NM limit line + allowed-zone shading, coast reference, 1‑NM rings.
 - Measure tool (NM), live geolocation with distance/bearing to target, day/night, fullscreen.
+- **Saved-routes library** (IndexedDB): a "My Routes" drawer to save / load / rename / duplicate /
+  delete multiple routes; the working route autosaves on-device and is restored next time you open.
 - Import / export: **GPX, GeoJSON, JSON**.
 - **Fuel calculator:** 3 consumption modes, reserve policies (thirds / % / fixed), sea-condition
   penalty, fuel bar, go/no-go verdict, per-leg turn-back table, point-of-no-return.
@@ -62,11 +64,11 @@ https://shahar373.github.io/SHAHAR-Navigation/
 
 ## Project status
 
-Milestones **M0** (modularization, no behavior change) and **M1** (installable, offline-capable
-PWA + auto-deploy) are done. The original single file is kept at `reference/marine_nav_pro.html`
-for parity diffing. Upcoming: **M1b** offline vector basemap + "download area", **M2** saved-routes
-library (IndexedDB), **M3** Android APK (Capacitor), **M4** live tracking & richer marine features,
-**M5** polish.
+Milestones **M0** (modularization, no behavior change), **M1** (installable, offline-capable PWA +
+auto-deploy) and **M2** (IndexedDB saved-routes library + working-route autosave) are done. The
+original single file is kept at `reference/marine_nav_pro.html` for parity diffing. Upcoming:
+**M1b** offline vector basemap + "download area", **M3** Android APK (Capacitor), **M4** live
+tracking & richer marine features, **M5** polish.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
 (keyless/free data only, Hebrew RTL, offline-first, OSM tile-policy compliance, NM/knots/DM units).

@@ -1,11 +1,10 @@
 /* GPX / GeoJSON / native-JSON import & export — DOM/file wiring (L602–634).
  * The pure serialize/parse logic lives in ./serialize.js (unit-tested). */
 
-import { map } from '../map/map.js';
-import { store, uid } from '../state/store.js';
+import { store } from '../state/store.js';
 import { $ } from '../ui/dom.js';
 import { toast } from '../ui/toast.js';
-import { renderRoute, getRouteLine } from '../route/route.js';
+import { loadRoute } from '../route/route.js';
 import { toJson, toGeoJson, toGpx, parseRoute } from './serialize.js';
 
 function download(name, text, type) {
@@ -23,14 +22,10 @@ function applyImport(text, fname) {
     return;
   }
   wpts.forEach((w) => {
-    w._id = uid();
     if (!w.type) w.type = 'cruise';
     if (!w.vhf) w.vhf = '16';
   });
-  store.state = { name, wpts, extended: wpts.some((w) => w.type === 'ext') };
-  $('btnExtend').classList.toggle('active', store.state.extended);
-  renderRoute(true);
-  map.flyToBounds(getRouteLine().getBounds().pad(0.4), { duration: 0.8 });
+  loadRoute({ name, wpts, extended: wpts.some((w) => w.type === 'ext') });
   toast('יובאו ' + wpts.length + ' נקודות ✓');
 }
 

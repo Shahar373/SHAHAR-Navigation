@@ -22,6 +22,7 @@ import { init as initFuel } from './fuel/fuel.js';
 import { init as initRoute, renderRefs, renderRoute, getRouteLine } from './route/route.js';
 import { init as initEditor } from './route/editor.js';
 import { init as initIO } from './io/import-export.js';
+import { init as initRoutes } from './routes/routes-ui.js';
 import { init as initMeasure } from './measure/measure.js';
 import { init as initLocate } from './nav/locate.js';
 import { init as initWindy } from './weather/windy.js';
@@ -44,6 +45,9 @@ initFuel();
 initRoute();
 initEditor();
 initIO();
+// routes library must init before the first paint: it restores the working draft
+// and registers the draft-autosave subscriber.
+initRoutes();
 initMeasure();
 initLocate();
 initWindy();

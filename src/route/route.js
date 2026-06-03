@@ -114,6 +114,21 @@ export function renderRoute(animate) {
   $('wpCount').textContent = store.state.wpts.length + ' נק׳';
 }
 
+/** Replace the working route from a `{name, wpts, extended}` state, assign fresh
+ * runtime ids, render and fit the view. Shared by file import and the saved-routes
+ * library so both load a route the same way. */
+export function loadRoute(state) {
+  store.state = {
+    name: state.name,
+    wpts: state.wpts.map((w) => ({ ...w, _id: uid() })),
+    extended: !!state.extended,
+  };
+  $('btnExtend').classList.toggle('active', store.state.extended);
+  renderRoute(true);
+  const rl = getRouteLine();
+  if (rl) map.flyToBounds(rl.getBounds().pad(0.4), { duration: 0.8 });
+}
+
 /** Fly to a waypoint and open its popup (used by the sidebar leg list). */
 export function focusWaypoint(i) {
   const w = store.state.wpts[i];
