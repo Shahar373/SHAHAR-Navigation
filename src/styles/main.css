@@ -1083,6 +1083,66 @@ input[type='range'] {
   color: var(--red);
 }
 
+/* offline "download area" (M1b) */
+.dl-progress {
+  margin-top: 10px;
+}
+.dl-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--stroke);
+  overflow: hidden;
+}
+.dl-bar {
+  height: 100%;
+  width: 0;
+  background: var(--cyan);
+  transition: width 0.2s;
+}
+.dl-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono';
+}
+.dl-cancel {
+  background: rgba(255, 90, 95, 0.14);
+  border: 1px solid rgba(255, 90, 95, 0.5);
+  color: var(--red);
+  border-radius: 7px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-family: 'Heebo';
+  font-size: 11px;
+}
+.dl-empty {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.dl-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--stroke);
+  border-radius: 9px;
+  padding: 7px 10px;
+  margin-top: 7px;
+}
+.dl-area-txt {
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+  color: var(--soft);
+  font-family: 'IBM Plex Mono';
+}
+
 .leaflet-popup-content-wrapper {
   background: var(--panel-solid);
   color: var(--text);

@@ -9,6 +9,9 @@ Hebrew RTL UI, a dark "nautical instrument" theme, and **only free, keyless, ope
 ## Features
 
 - Base layers (OSM / Esri satellite / OpenTopo) + OpenSeaMap **seamark** overlay.
+- **Offline maps:** "download this area" pre-caches Esri satellite + seamark for your region (or a
+  central-Israel coast preset) so the map works with no signal; an optional self-hosted PMTiles
+  vector basemap can be generated with `npm run build:basemap`.
 - Route with typed waypoints, animated track, RTL popups (VHF, DM coords, depth, bearing/distance).
 - Route stats (one-way / round-trip NM), cruise-speed slider → live ETA, clickable leg list.
 - Live **wind** widget (Open-Meteo) with a go/no-go verdict + SW-storm warning.
@@ -32,14 +35,15 @@ npm run dev        # http://localhost:5173
 
 ## Scripts
 
-| Command           | What it does                               |
-| ----------------- | ------------------------------------------ |
-| `npm run dev`     | Vite dev server                            |
-| `npm run build`   | Production build → `dist/`                 |
-| `npm run preview` | Serve the production build                 |
-| `npm run lint`    | ESLint                                     |
-| `npm run format`  | Prettier (write); `format:check` to verify |
-| `npm test`        | Vitest unit/smoke tests                    |
+| Command                 | What it does                                                    |
+| ----------------------- | --------------------------------------------------------------- |
+| `npm run dev`           | Vite dev server                                                 |
+| `npm run build`         | Production build → `dist/`                                      |
+| `npm run preview`       | Serve the production build                                      |
+| `npm run lint`          | ESLint                                                          |
+| `npm run format`        | Prettier (write); `format:check` to verify                      |
+| `npm test`              | Vitest unit/smoke tests                                         |
+| `npm run build:basemap` | Generate the offline PMTiles vector basemap (local; needs Java) |
 
 ## Install it on your phone (PWA)
 
@@ -49,8 +53,37 @@ then runs full-screen like a native app and works **offline**: the app itself, t
 wind/marine forecast (shown with an "as of" stamp), and any map areas you've already viewed are
 cached. Live data refreshes automatically whenever you're back online.
 
-> Full offline map coverage for areas you haven't browsed yet (a downloadable vector basemap) is
-> the next step — **M1b**.
+### Offline map coverage (download an area)
+
+Open the sidebar → **"מפה לא־מקוונת (הורדת אזור)"** and tap **"חוף מרכז הארץ"** (or **"הורד תצוגה
+נוכחית"**). This pre-fetches Esri satellite + OpenSeaMap seamark tiles for that region into the
+offline cache so the map renders with no signal. Do it from home (Wi-Fi) before heading out.
+
+> To stay within the OSM tile usage policy, `tile.openstreetmap.org` is **never** bulk-downloaded —
+> only Esri + seamark are pre-cached. For a true offline **vector** street basemap, generate a
+> self-hosted PMTiles archive on your own machine (open network, Java 17+):
+>
+> ```bash
+> npm run build:basemap   # → public/coast.pmtiles (central-Israel coast)
+> VITE_BASEMAP_URL=/SHAHAR-Navigation/coast.pmtiles npm run build
+> ```
+>
+> When `VITE_BASEMAP_URL` is set the app loads the vector basemap as the default; when unset the
+> PMTiles code is tree-shaken out entirely (zero bundle cost).
+
+## Android app (APK)
+
+The app also ships as a native **Android APK** (Capacitor) with real GPS, file export, and a
+screen wake-lock. The APK is built **in CI** (GitHub's runners have the Android SDK) — you don't
+need Android Studio:
+
+1. GitHub repo → **Actions → "Build Android APK" → "Run workflow"**.
+2. When it finishes, download the **`marinenav-debug-apk`** artifact from the run.
+3. Copy `app-debug.apk` to your phone and open it (enable "install from unknown sources").
+
+Pushing a `v*` tag (e.g. `git tag v0.3.0 && git push --tags`) also attaches the APK to a GitHub
+Release. The same `src/` codebase powers the web and native builds; native vs web behavior is
+selected at runtime through the adapters in `src/platform/`.
 
 ## Deploy (GitHub Pages)
 
@@ -64,17 +97,18 @@ https://shahar373.github.io/SHAHAR-Navigation/
 
 ## Project status
 
-Milestones **M0** (modularization, no behavior change), **M1** (installable, offline-capable PWA +
-auto-deploy) and **M2** (IndexedDB saved-routes library + working-route autosave) are done. The
-original single file is kept at `reference/marine_nav_pro.html` for parity diffing. Upcoming:
-**M1b** offline vector basemap + "download area", **M3** Android APK (Capacitor), **M4** live
-tracking & richer marine features, **M5** polish.
+Milestones **M0** (modularization), **M1** (installable PWA + auto-deploy), **M2** (IndexedDB
+saved-routes library), **M1b** ("download this area" offline caching + ready PMTiles basemap) and
+**M3** (Capacitor Android APK with native GPS / file export / wake-lock, built in CI) are done. The
+original single file is kept at `reference/marine_nav_pro.html` for parity diffing. Upcoming: **M4**
+live tracking & richer marine features, **M5** polish.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
 (keyless/free data only, Hebrew RTL, offline-first, OSM tile-policy compliance, NM/knots/DM units).
 
 ## Tech & data sources
 
-Vanilla JS, Leaflet 1.9.4 (bundled via npm), self-hosted fonts (`@fontsource`). Data: Open-Meteo
+Vanilla JS, Leaflet 1.9.4 (bundled via npm), self-hosted fonts (`@fontsource`), Capacitor for the
+Android shell, PMTiles/protomaps-leaflet for the optional offline vector basemap. Data: Open-Meteo
 (forecast + marine), OpenSeaMap, OSM, Esri/OpenTopo tiles, Windy (keyless embed). No API keys, no
 secrets.

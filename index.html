@@ -243,6 +243,39 @@
         </div>
 
         <div class="card">
+          <h2><span class="dot"></span>מפה לא־מקוונת (הורדת אזור)</h2>
+          <div class="btnrow">
+            <button class="abtn" id="btnDlView">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></svg
+              >הורד תצוגה נוכחית
+            </button>
+            <button class="abtn" id="btnDlCoast">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                /></svg
+              >חוף מרכז הארץ
+            </button>
+          </div>
+          <div class="dl-progress" id="dlProgress" style="display: none">
+            <div class="dl-bar-track"><div class="dl-bar" id="dlBar"></div></div>
+            <div class="dl-row">
+              <span id="dlText">מוריד…</span
+              ><button class="dl-cancel" id="btnDlCancel">ביטול</button>
+            </div>
+          </div>
+          <div class="dl-empty" id="dlEmpty">
+            לא הורדו אזורים. ההורדה שומרת לוויין + seamark לשימוש בים.
+          </div>
+          <div id="dlAreas"></div>
+          <div class="hint">
+            שומר אריחי לוויין (Esri) ושכבת seamark לאזור שבחרת, לשימוש ללא קליטה. כדאי להוריד מהבית
+            לפני יציאה. (מפת רחובות וקטורית offline — דרך build:basemap, ראה README.)
+          </div>
+        </div>
+
+        <div class="card">
           <h2><span class="dot"></span>עריכת מסלולים</h2>
           <div class="btnrow">
             <button class="abtn edit" id="btnEdit2">

@@ -3,3 +3,14 @@ dist
 *.local
 .DS_Store
 .vite
+
+# Capacitor native project (generated in CI from capacitor.config.json — not committed)
+android
+ios
+*.apk
+*.aab
+
+# M1b basemap build artifacts (generated locally; not committed)
+planetiler*.jar
+public/*.pmtiles
+data/

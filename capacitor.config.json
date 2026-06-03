@@ -1,0 +1,8 @@
+{
+  "appId": "com.shahar.marinenav",
+  "appName": "MarineNav",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": true
+  }
+}

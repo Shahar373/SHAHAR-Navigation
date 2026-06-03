@@ -3,9 +3,9 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // Deploy target is GitHub Pages project site: https://shahar373.github.io/SHAHAR-Navigation/
 // so the production build is served from the '/SHAHAR-Navigation/' sub-path. Dev stays at '/'.
-// (For the future Capacitor build in M3 we'll override base via an env var.)
+// The Capacitor APK build (M3) sets CAP_BUILD=1 to serve assets relatively from the webview root.
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/SHAHAR-Navigation/' : '/',
+  base: command === 'build' ? (process.env.CAP_BUILD ? './' : '/SHAHAR-Navigation/') : '/',
   build: {
     target: 'es2020',
     outDir: 'dist',
@@ -48,7 +48,8 @@ export default defineConfig(({ command }) => ({
             handler: 'CacheFirst',
             options: {
               cacheName: 'map-tiles',
-              expiration: { maxEntries: 3000, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              // raised for M1b "download this area" (a coastal region spans many tiles)
+              expiration: { maxEntries: 12000, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
