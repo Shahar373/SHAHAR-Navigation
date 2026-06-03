@@ -37,7 +37,7 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M1)
+## Architecture (current, after M2)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
@@ -47,6 +47,9 @@ instrument" theme. This file is binding for all future work — read it before c
 - `src/weather/` — `wind.js`, `marine-field.js`, `windy.js`, `forecast-cache.js` (last-forecast cache).
 - `src/fuel/fuel.js` — calculator (`computeFuel` pure + `updFuel` render).
 - `src/io/` — `serialize.js` (pure GPX/GeoJSON/JSON), `import-export.js` (DOM/file wiring).
+- `src/routes/` (M2) — `route-record.js` (pure: record shape, distance, date), `routes-db.js`
+  (IndexedDB library CRUD), `draft.js` (working-route autosave in localStorage), `routes-ui.js`
+  (the "המסלולים שלי" drawer + draft restore). `route.js#loadRoute` is the shared route-swap helper.
 - `src/nav/locate.js`, `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
 - PWA: `vite-plugin-pwa` (Workbox) generates `manifest.webmanifest` + `sw.js`. Icons in `public/`
   are produced by `scripts/generate-icons.mjs` (sharp). `.github/workflows/deploy.yml` deploys to
@@ -74,7 +77,9 @@ npm test               # Vitest unit/smoke tests
   install button), GitHub Pages auto-deploy.
 - **M1b (deferred)** — self-hosted PMTiles vector basemap + explicit "download this area" for full
   offline map coverage with strict OSM-tile-policy compliance.
-- **M2** — IndexedDB saved-routes library (save/load/rename/duplicate/delete).
+- **M2 (done)** — IndexedDB saved-routes library: "המסלולים שלי" drawer with save / load / rename /
+  duplicate / delete; the working route autosaves to localStorage and is restored on startup; file
+  import/export (GPX/GeoJSON/JSON) stays wired through the shared `loadRoute` helper.
 - **M3** — Capacitor Android shell + native Geolocation (background) + Filesystem + wake-lock; APK.
 - **M4** — live track recording, per-leg ETA/fuel vs live wind/current, fuel cost in ₪.
 - **M5** — settings, accessibility, error handling, performance.
