@@ -37,17 +37,20 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M0)
+## Architecture (current, after M1)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
 - `src/geo/geo.js` — pure geodesy (nm, brg, dest, dm, hm, ptSegNM).
 - `src/map/` — `map.js` (map + base layers + seamark), `overlays.js` (coast, rings, 12NM, zone).
 - `src/route/` — `route.js` (render/markers/popups), `legs.js` (stats/ETA/leg list), `editor.js`.
-- `src/weather/` — `wind.js`, `marine-field.js`, `windy.js`.
+- `src/weather/` — `wind.js`, `marine-field.js`, `windy.js`, `forecast-cache.js` (last-forecast cache).
 - `src/fuel/fuel.js` — calculator (`computeFuel` pure + `updFuel` render).
 - `src/io/` — `serialize.js` (pure GPX/GeoJSON/JSON), `import-export.js` (DOM/file wiring).
-- `src/nav/locate.js`, `src/measure/measure.js`, `src/ui/` (dom, toast, chrome).
+- `src/nav/locate.js`, `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
+- PWA: `vite-plugin-pwa` (Workbox) generates `manifest.webmanifest` + `sw.js`. Icons in `public/`
+  are produced by `scripts/generate-icons.mjs` (sharp). `.github/workflows/deploy.yml` deploys to
+  GitHub Pages (production `base` is `/SHAHAR-Navigation/`).
 
 The original single-file app is preserved at `reference/marine_nav_pro.html` for behavioral-parity
 diffing and is **not** part of the build.
@@ -66,8 +69,11 @@ npm test               # Vitest unit/smoke tests
 ## Milestone roadmap
 
 - **M0 (done)** — Vite scaffold + lift-and-shift to ES modules, no behavior change, tests/lint.
-- **M1** — PWA (manifest + service worker), offline tiles (PMTiles + runtime cache), cache last
-  forecast, "download area", offline-aware UI.
+- **M1 (done)** — installable PWA (manifest + service worker), app shell precached, last forecast
+  cached with an "as of" stamp, runtime caching of viewed map tiles, offline-aware UI (banner +
+  install button), GitHub Pages auto-deploy.
+- **M1b (deferred)** — self-hosted PMTiles vector basemap + explicit "download this area" for full
+  offline map coverage with strict OSM-tile-policy compliance.
 - **M2** — IndexedDB saved-routes library (save/load/rename/duplicate/delete).
 - **M3** — Capacitor Android shell + native Geolocation (background) + Filesystem + wake-lock; APK.
 - **M4** — live track recording, per-leg ETA/fuel vs live wind/current, fuel cost in ₪.

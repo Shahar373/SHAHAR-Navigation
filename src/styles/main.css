@@ -1149,6 +1149,34 @@ body.editing .wp .ring {
     0 3px 10px rgba(0, 0, 0, 0.5);
 }
 
+.offline-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-160%);
+  z-index: 1500;
+  background: var(--amber);
+  color: #06151d;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.offline-banner.on {
+  transform: translateX(-50%) translateY(0);
+}
+.install-btn {
+  width: 100%;
+  margin-top: 11px;
+  background: rgba(65, 211, 203, 0.12);
+  border-color: var(--cyan);
+  color: var(--text);
+}
+
 @media (max-width: 760px) {
   #side {
     width: 340px;

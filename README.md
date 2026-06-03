@@ -39,12 +39,34 @@ npm run dev        # http://localhost:5173
 | `npm run format`  | Prettier (write); `format:check` to verify |
 | `npm test`        | Vitest unit/smoke tests                    |
 
+## Install it on your phone (PWA)
+
+Once deployed (see below), open the live URL in your phone's browser and choose **"Add to Home
+Screen" / "Install"** (the app also shows an **"התקן את האפליקציה"** button when installable). It
+then runs full-screen like a native app and works **offline**: the app itself, the last fetched
+wind/marine forecast (shown with an "as of" stamp), and any map areas you've already viewed are
+cached. Live data refreshes automatically whenever you're back online.
+
+> Full offline map coverage for areas you haven't browsed yet (a downloadable vector basemap) is
+> the next step — **M1b**.
+
+## Deploy (GitHub Pages)
+
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub
+Pages. **One-time setup:** in the GitHub repo go to **Settings → Pages → Build and deployment →
+Source: "GitHub Actions"**. After the first run the app is live at:
+
+```
+https://shahar373.github.io/SHAHAR-Navigation/
+```
+
 ## Project status
 
-This is a modular Vite project (milestone **M0**: the original single-file app was lifted into ES
-modules with **no behavior change**). The original is kept at `reference/marine_nav_pro.html` for
-parity diffing. Upcoming milestones: **PWA + offline** (M1), **saved routes** (M2), **Android APK
-via Capacitor** (M3), live tracking & richer marine features (M4), polish (M5).
+Milestones **M0** (modularization, no behavior change) and **M1** (installable, offline-capable
+PWA + auto-deploy) are done. The original single file is kept at `reference/marine_nav_pro.html`
+for parity diffing. Upcoming: **M1b** offline vector basemap + "download area", **M2** saved-routes
+library (IndexedDB), **M3** Android APK (Capacitor), **M4** live tracking & richer marine features,
+**M5** polish.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
 (keyless/free data only, Hebrew RTL, offline-first, OSM tile-policy compliance, NM/knots/DM units).

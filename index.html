@@ -7,9 +7,14 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
     <title>ניווט ימי · הרצליה · משיט 30</title>
+    <meta name="theme-color" content="#07151e" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon-180.png" />
   </head>
   <body>
     <div id="map"></div>
+
+    <div class="offline-banner" id="offlineBanner">מצב לא־מקוון — מוצגים נתונים אחרונים שנשמרו</div>
 
     <button class="menu-btn" id="menuBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -120,6 +125,9 @@
       </div>
 
       <div class="sb-body">
+        <button class="abtn install-btn" id="btnInstall" style="display: none">
+          📲 התקן את האפליקציה במכשיר
+        </button>
         <div class="card" id="condCard">
           <h2><span class="dot"></span>תנאי ים — מרינה הרצליה</h2>
           <div class="wind">
