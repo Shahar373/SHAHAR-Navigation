@@ -1,15 +1,17 @@
 /* Live waves & currents field from the Open-Meteo Marine API (multi-point, single request),
- * drawn on the map with a legend (L522–561). Ported verbatim (no caching yet — that lands in M1). */
+ * drawn on the map with a legend (L522–561). M1: caches the last field and falls back to it offline. */
 
 import L from 'leaflet';
 import { map } from '../map/map.js';
 import { bindTog, $ } from '../ui/dom.js';
 import { toast } from '../ui/toast.js';
+import { saveForecast, loadForecast, formatAge } from './forecast-cache.js';
 
 const waveLayer = L.layerGroup(),
   currLayer = L.layerGroup();
 let fieldData = null,
-  fieldBusy = false;
+  fieldBusy = false,
+  fieldCachedAt = null;
 
 function gridPoints() {
   const pts = [];
@@ -30,7 +32,7 @@ async function fetchField() {
     const j = await r.json();
     const arr = Array.isArray(j) ? j : [j];
     const now = new Date();
-    fieldData = [];
+    const parsed = [];
     arr.forEach((o) => {
       if (!o.hourly || !o.hourly.time) return;
       let k = o.hourly.time.findIndex((t) => new Date(t) >= now);
@@ -40,11 +42,21 @@ async function fetchField() {
         wd = o.hourly.wave_direction?.[k],
         cv = o.hourly.ocean_current_velocity?.[k],
         cd = o.hourly.ocean_current_direction?.[k];
-      fieldData.push({ lat: o.latitude, lon: o.longitude, wh, wd, cv, cd });
+      parsed.push({ lat: o.latitude, lon: o.longitude, wh, wd, cv, cd });
     });
+    fieldData = parsed;
+    fieldCachedAt = null;
+    saveForecast('marine', fieldData);
   } catch {
-    toast('שדה ים לא זמין כעת');
-    fieldData = null;
+    const cached = loadForecast('marine');
+    if (cached) {
+      fieldData = cached.data;
+      fieldCachedAt = cached.at;
+      toast('שדה ים: נתונים שמורים · נכון ל' + formatAge(cached.at));
+    } else {
+      toast('שדה ים לא זמין כעת');
+      fieldData = null;
+    }
   }
   fieldBusy = false;
   return fieldData;
@@ -145,6 +157,9 @@ function showLegend() {
       (x) =>
         (html += `<div class="li"><span class="sw" style="background:${x[0]}"></span>${x[1]}</div>`)
     );
+  }
+  if (fieldCachedAt) {
+    html += `<div class="li" style="margin-top:6px;color:var(--amber)">נכון ל${formatAge(fieldCachedAt)}</div>`;
   }
   $('legTitle').textContent = title;
   $('legItems').innerHTML = html;

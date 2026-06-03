@@ -27,6 +27,10 @@ import { init as initLocate } from './nav/locate.js';
 import { init as initWindy } from './weather/windy.js';
 import { init as initChrome } from './ui/chrome.js';
 import { init as initWind } from './weather/wind.js';
+import { init as initPwa } from './pwa/offline.js';
+
+// 0. PWA: register service worker + offline/install UI (independent of the map)
+initPwa();
 
 // 1. map must exist before anything else touches it
 initMap();
