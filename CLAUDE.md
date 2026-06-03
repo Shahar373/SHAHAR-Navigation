@@ -1,0 +1,74 @@
+# CLAUDE.md — Marine Nav Pro project law
+
+Marine navigation / route planner for a beginner Israeli **Class‑30 skipper ("Mashit 30")**,
+fixed departure at **Herzliya Marina**. Vanilla JS + Leaflet, Hebrew RTL, dark "nautical
+instrument" theme. This file is binding for all future work — read it before changing anything.
+
+## Hard constraints (do not violate)
+
+1. **Keyless, free, open data only.** Allowed sources: Open-Meteo (forecast + marine),
+   OpenSeaMap, OSM / PMTiles, Esri & OpenTopo tiles, Windy (keyless embed only). **No paid API
+   keys, no secrets committed, ever.**
+2. **Hebrew RTL is mandatory.** Keep `dir="rtl"`, Hebrew strings, RTL-correct layout, and the
+   fonts Heebo / Frank Ruhl Libre / IBM Plex Mono (self-hosted via `@fontsource`, not a CDN).
+3. **Offline-first is a primary requirement** (no cell signal at sea). The app must remain usable
+   with no network and degrade gracefully. Offline map tiles + last-forecast caching + an explicit
+   "download this area" action land in M1.
+4. **Persistence:** use IndexedDB (or Capacitor Filesystem on native) for the saved-routes library
+   (M2). Keep file import/export (GPX / GeoJSON / JSON) working too.
+5. **Safety disclaimer is permanent and visible:** "planning aid, not certified navigation —
+   verify official charts and regulations." It lives in the VHF/safety card in `index.html`. Never
+   remove it.
+6. **Tile licensing — respect the OSM tile usage policy.** Heavy use of `tile.openstreetmap.org`
+   in a distributed app is **not allowed**. The committed tile strategy is a **self-hosted PMTiles
+   vector basemap** (default) + runtime caching for the Esri/seamark overlays. Do not ship a build
+   that bulk-hits the public OSM tile servers.
+7. **Units & geo:** nautical miles, knots, WGS84, coordinates shown in degrees-decimal-minutes
+   (DM). Do not change these.
+8. **Don't break existing features.** Each milestone must leave `npm run dev` working and keep the
+   smoke tests green. Add regression checks where reasonable.
+
+## Conventions
+
+- **Vanilla ES modules**, no UI framework. Reactivity comes from the tiny event bus in
+  `src/state/store.js` (`on` / `emit`), not a framework.
+- Keep dependencies **minimal** and keyless. No build-time secrets.
+- ESLint + Prettier must pass (`npm run lint`, `npm run format:check`).
+- Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
+  stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
+
+## Architecture (current, after M0)
+
+- `src/main.js` — entry; runs each module's `init()` in a deterministic order.
+- `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
+- `src/geo/geo.js` — pure geodesy (nm, brg, dest, dm, hm, ptSegNM).
+- `src/map/` — `map.js` (map + base layers + seamark), `overlays.js` (coast, rings, 12NM, zone).
+- `src/route/` — `route.js` (render/markers/popups), `legs.js` (stats/ETA/leg list), `editor.js`.
+- `src/weather/` — `wind.js`, `marine-field.js`, `windy.js`.
+- `src/fuel/fuel.js` — calculator (`computeFuel` pure + `updFuel` render).
+- `src/io/` — `serialize.js` (pure GPX/GeoJSON/JSON), `import-export.js` (DOM/file wiring).
+- `src/nav/locate.js`, `src/measure/measure.js`, `src/ui/` (dom, toast, chrome).
+
+The original single-file app is preserved at `reference/marine_nav_pro.html` for behavioral-parity
+diffing and is **not** part of the build.
+
+## Commands
+
+```bash
+npm run dev            # Vite dev server
+npm run build          # production build → dist/
+npm run preview        # serve the built app
+npm run lint           # ESLint
+npm run format         # Prettier write   (format:check to verify)
+npm test               # Vitest unit/smoke tests
+```
+
+## Milestone roadmap
+
+- **M0 (done)** — Vite scaffold + lift-and-shift to ES modules, no behavior change, tests/lint.
+- **M1** — PWA (manifest + service worker), offline tiles (PMTiles + runtime cache), cache last
+  forecast, "download area", offline-aware UI.
+- **M2** — IndexedDB saved-routes library (save/load/rename/duplicate/delete).
+- **M3** — Capacitor Android shell + native Geolocation (background) + Filesystem + wake-lock; APK.
+- **M4** — live track recording, per-leg ETA/fuel vs live wind/current, fuel cost in ₪.
+- **M5** — settings, accessibility, error handling, performance.
