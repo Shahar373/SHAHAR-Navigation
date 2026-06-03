@@ -3,6 +3,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { bindTog } from '../ui/dom.js';
+import { tryAddVectorBasemap } from './basemap-vector.js';
 
 export const map = L.map('map', {
   zoomControl: true,
@@ -36,10 +37,16 @@ export const seamark = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}
 export function init() {
   base['מפה (OSM)'].addTo(map);
   seamark.addTo(map);
-  L.control.layers(base, null, { position: 'topleft', collapsed: true }).addTo(map);
+  const layers = L.control.layers(base, null, { position: 'topleft', collapsed: true }).addTo(map);
   L.control
     .scale({ metric: true, imperial: false, position: 'bottomleft', maxWidth: 140 })
     .addTo(map);
+
+  // M1b: if a self-hosted PMTiles vector basemap is configured, prefer it (and stop
+  // using the raster OSM base — keeps us OSM-tile-policy compliant). No-op otherwise.
+  tryAddVectorBasemap(map, layers).then((added) => {
+    if (added) base['מפה (OSM)'].remove();
+  });
 
   bindTog(
     'tgSeamark',

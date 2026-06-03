@@ -37,12 +37,15 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M2)
+## Architecture (current, after M1b)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
 - `src/geo/geo.js` — pure geodesy (nm, brg, dest, dm, hm, ptSegNM).
-- `src/map/` — `map.js` (map + base layers + seamark), `overlays.js` (coast, rings, 12NM, zone).
+- `src/map/` — `map.js` (map + base layers + seamark), `overlays.js` (coast, rings, 12NM, zone),
+  `tiles.js` (pure slippy-tile math + tile URLs), `download-area.js` ("download this area" offline
+  raster caching of Esri+seamark — never bulk-fetches OSM), `basemap-vector.js` (dormant PMTiles
+  vector basemap, activated by `VITE_BASEMAP_URL`; deps are tree-shaken out when unset).
 - `src/route/` — `route.js` (render/markers/popups), `legs.js` (stats/ETA/leg list), `editor.js`.
 - `src/weather/` — `wind.js`, `marine-field.js`, `windy.js`, `forecast-cache.js` (last-forecast cache).
 - `src/fuel/fuel.js` — calculator (`computeFuel` pure + `updFuel` render).
@@ -75,8 +78,11 @@ npm test               # Vitest unit/smoke tests
 - **M1 (done)** — installable PWA (manifest + service worker), app shell precached, last forecast
   cached with an "as of" stamp, runtime caching of viewed map tiles, offline-aware UI (banner +
   install button), GitHub Pages auto-deploy.
-- **M1b (deferred)** — self-hosted PMTiles vector basemap + explicit "download this area" for full
-  offline map coverage with strict OSM-tile-policy compliance.
+- **M1b (done)** — explicit "download this area" pre-caches Esri satellite + OpenSeaMap seamark for
+  the central-Israel coast (OSM never bulk-fetched). Self-hosted PMTiles vector basemap is wired and
+  ready (`basemap-vector.js` + `VITE_BASEMAP_URL`); generate the archive locally with
+  `npm run build:basemap` (`scripts/build-basemap.mjs`, Planetiler) — CI can't build it (the sandbox
+  blocks OSM data downloads).
 - **M2 (done)** — IndexedDB saved-routes library: "המסלולים שלי" drawer with save / load / rename /
   duplicate / delete; the working route autosaves to localStorage and is restored on startup; file
   import/export (GPX/GeoJSON/JSON) stays wired through the shared `loadRoute` helper.

@@ -23,6 +23,7 @@ import { init as initRoute, renderRefs, renderRoute, getRouteLine } from './rout
 import { init as initEditor } from './route/editor.js';
 import { init as initIO } from './io/import-export.js';
 import { init as initRoutes } from './routes/routes-ui.js';
+import { init as initDownloadArea } from './map/download-area.js';
 import { init as initMeasure } from './measure/measure.js';
 import { init as initLocate } from './nav/locate.js';
 import { init as initWindy } from './weather/windy.js';
@@ -38,6 +39,7 @@ initMap();
 // 2. static + field layers and their toggles
 initOverlays();
 initMarineField();
+initDownloadArea();
 // 3. bus subscribers (legs + fuel) must be registered before the first render
 initLegs();
 initFuel();

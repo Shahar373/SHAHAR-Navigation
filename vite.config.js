@@ -48,7 +48,8 @@ export default defineConfig(({ command }) => ({
             handler: 'CacheFirst',
             options: {
               cacheName: 'map-tiles',
-              expiration: { maxEntries: 3000, maxAgeSeconds: 60 * 60 * 24 * 60 },
+              // raised for M1b "download this area" (a coastal region spans many tiles)
+              expiration: { maxEntries: 12000, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [0, 200] },
             },
           },
