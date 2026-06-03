@@ -37,7 +37,7 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M1b)
+## Architecture (current, after M3)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
@@ -54,9 +54,18 @@ instrument" theme. This file is binding for all future work — read it before c
   (IndexedDB library CRUD), `draft.js` (working-route autosave in localStorage), `routes-ui.js`
   (the "המסלולים שלי" drawer + draft restore). `route.js#loadRoute` is the shared route-swap helper.
 - `src/nav/locate.js`, `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
+- `src/platform/` (M3) — native/web adapters: `geolocation.js` (Capacitor Geolocation on device,
+  `navigator.geolocation` on web), `files.js` (Filesystem on device, Blob download on web),
+  `wakelock.js` (Screen Wake Lock — works in both). Modules pick the path via
+  `Capacitor.isNativePlatform()`; native plugins are dynamically imported (off the PWA bundle).
 - PWA: `vite-plugin-pwa` (Workbox) generates `manifest.webmanifest` + `sw.js`. Icons in `public/`
   are produced by `scripts/generate-icons.mjs` (sharp). `.github/workflows/deploy.yml` deploys to
   GitHub Pages (production `base` is `/SHAHAR-Navigation/`).
+- Native (M3): `capacitor.config.json` (appId `com.shahar.marinenav`, `webDir: dist`). The Android
+  project is **not committed** — `.github/workflows/android.yml` regenerates it with `cap add`,
+  patches the manifest via `scripts/patch-android.mjs` (location/wake-lock perms + Hebrew label),
+  and builds the debug APK in CI; the `CAP_BUILD=1` build uses a relative `base` for the WebView.
+  Run that workflow (or push a `v*` tag) to get the APK.
 
 The original single-file app is preserved at `reference/marine_nav_pro.html` for behavioral-parity
 diffing and is **not** part of the build.
@@ -86,6 +95,11 @@ npm test               # Vitest unit/smoke tests
 - **M2 (done)** — IndexedDB saved-routes library: "המסלולים שלי" drawer with save / load / rename /
   duplicate / delete; the working route autosaves to localStorage and is restored on startup; file
   import/export (GPX/GeoJSON/JSON) stays wired through the shared `loadRoute` helper.
-- **M3** — Capacitor Android shell + native Geolocation (background) + Filesystem + wake-lock; APK.
-- **M4** — live track recording, per-leg ETA/fuel vs live wind/current, fuel cost in ₪.
+- **M3 (done)** — Capacitor Android shell wrapping the web build; native foreground Geolocation
+  (runtime-permission GPS), native Filesystem for GPX/GeoJSON/JSON export, and screen wake-lock,
+  all behind `src/platform/` adapters (web build unchanged). The debug APK is built in CI
+  (`android.yml`) and downloaded from the run/Release — no Android SDK needed locally.
+  (Background track recording lands with M4's live tracking.)
+- **M4** — live track recording (incl. background geolocation), per-leg ETA/fuel vs live wind/current,
+  fuel cost in ₪.
 - **M5** — settings, accessibility, error handling, performance.

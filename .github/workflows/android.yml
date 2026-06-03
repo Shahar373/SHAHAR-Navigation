@@ -1,0 +1,64 @@
+name: Build Android APK
+
+# Builds the Capacitor Android debug APK in CI (GitHub runners have the Android SDK;
+# the dev sandbox does not). Run it manually from the Actions tab ("Run workflow") to get
+# a downloadable APK artifact, or push a tag v* to also attach the APK to a Release.
+# The web app keeps building/deploying separately via deploy.yml.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Build the web assets with a relative base so they resolve inside the WebView.
+      - name: Build web assets
+        run: npm run build
+        env:
+          CAP_BUILD: '1'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+
+      # Capacitor 8 → compileSdk/targetSdk 36, AGP 8.13 → build-tools 36.
+      - name: Install Android SDK packages
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      # Generate the native project fresh from capacitor.config.json (android/ is gitignored)
+      # and copy in the web assets, then assemble a debug (auto-signed) APK.
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Patch manifest (location/wake-lock perms + Hebrew label)
+        run: node scripts/patch-android.mjs
+      - name: Assemble debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marinenav-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Attach APK to release (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/debug/app-debug.apk

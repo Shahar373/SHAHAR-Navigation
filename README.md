@@ -71,6 +71,20 @@ offline cache so the map renders with no signal. Do it from home (Wi-Fi) before 
 > When `VITE_BASEMAP_URL` is set the app loads the vector basemap as the default; when unset the
 > PMTiles code is tree-shaken out entirely (zero bundle cost).
 
+## Android app (APK)
+
+The app also ships as a native **Android APK** (Capacitor) with real GPS, file export, and a
+screen wake-lock. The APK is built **in CI** (GitHub's runners have the Android SDK) — you don't
+need Android Studio:
+
+1. GitHub repo → **Actions → "Build Android APK" → "Run workflow"**.
+2. When it finishes, download the **`marinenav-debug-apk`** artifact from the run.
+3. Copy `app-debug.apk` to your phone and open it (enable "install from unknown sources").
+
+Pushing a `v*` tag (e.g. `git tag v0.3.0 && git push --tags`) also attaches the APK to a GitHub
+Release. The same `src/` codebase powers the web and native builds; native vs web behavior is
+selected at runtime through the adapters in `src/platform/`.
+
 ## Deploy (GitHub Pages)
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub
@@ -83,10 +97,10 @@ https://shahar373.github.io/SHAHAR-Navigation/
 
 ## Project status
 
-Milestones **M0** (modularization), **M1** (installable, offline-capable PWA + auto-deploy), **M2**
-(IndexedDB saved-routes library + working-route autosave) and **M1b** ("download this area" offline
-caching + ready-to-use PMTiles vector basemap) are done. The original single file is kept at
-`reference/marine_nav_pro.html` for parity diffing. Upcoming: **M3** Android APK (Capacitor), **M4**
+Milestones **M0** (modularization), **M1** (installable PWA + auto-deploy), **M2** (IndexedDB
+saved-routes library), **M1b** ("download this area" offline caching + ready PMTiles basemap) and
+**M3** (Capacitor Android APK with native GPS / file export / wake-lock, built in CI) are done. The
+original single file is kept at `reference/marine_nav_pro.html` for parity diffing. Upcoming: **M4**
 live tracking & richer marine features, **M5** polish.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
@@ -94,6 +108,7 @@ See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project cons
 
 ## Tech & data sources
 
-Vanilla JS, Leaflet 1.9.4 (bundled via npm), self-hosted fonts (`@fontsource`). Data: Open-Meteo
+Vanilla JS, Leaflet 1.9.4 (bundled via npm), self-hosted fonts (`@fontsource`), Capacitor for the
+Android shell, PMTiles/protomaps-leaflet for the optional offline vector basemap. Data: Open-Meteo
 (forecast + marine), OpenSeaMap, OSM, Esri/OpenTopo tiles, Windy (keyless embed). No API keys, no
 secrets.

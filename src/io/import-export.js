@@ -5,14 +5,12 @@ import { store } from '../state/store.js';
 import { $ } from '../ui/dom.js';
 import { toast } from '../ui/toast.js';
 import { loadRoute } from '../route/route.js';
+import { saveTextFile } from '../platform/files.js';
 import { toJson, toGeoJson, toGpx, parseRoute } from './serialize.js';
 
-function download(name, text, type) {
-  const b = new Blob([text], { type });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(b);
-  a.download = name;
-  a.click();
+async function download(name, text, type) {
+  const r = await saveTextFile(name, text, type);
+  if (r.native) toast('נשמר לתיקיית המסמכים: ' + r.path + ' ✓');
 }
 
 function applyImport(text, fname) {
