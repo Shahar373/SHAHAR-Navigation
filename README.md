@@ -13,7 +13,10 @@ Hebrew RTL UI, a dark "nautical instrument" theme, and **only free, keyless, ope
   central-Israel coast preset) so the map works with no signal; an optional self-hosted PMTiles
   vector basemap can be generated with `npm run build:basemap`.
 - Route with typed waypoints, animated track, RTL popups (VHF, DM coords, depth, bearing/distance).
-- Route stats (one-way / round-trip NM), cruise-speed slider → live ETA, clickable leg list.
+- Route stats (one-way / round-trip NM), cruise-speed slider → live ETA, clickable leg list, plus a
+  **wind/current-aware ETA** and per-leg minutes.
+- **Live track recording:** record the GPS track you actually sail, see it drawn live (distance /
+  time / speed HUD), and save it to a "הקלטות" list with GPX export.
 - Live **wind** widget (Open-Meteo) with a go/no-go verdict + SW-storm warning.
 - Live **waves & currents** field (Open-Meteo Marine API) drawn on the map with a legend.
 - **Windy** embed (wind / waves / currents).
@@ -24,7 +27,7 @@ Hebrew RTL UI, a dark "nautical instrument" theme, and **only free, keyless, ope
   delete multiple routes; the working route autosaves on-device and is restored next time you open.
 - Import / export: **GPX, GeoJSON, JSON**.
 - **Fuel calculator:** 3 consumption modes, reserve policies (thirds / % / fixed), sea-condition
-  penalty, fuel bar, go/no-go verdict, per-leg turn-back table, point-of-no-return.
+  penalty, fuel bar, go/no-go verdict, per-leg turn-back table, point-of-no-return, **cost in ₪**.
 
 ## Getting started
 
@@ -98,10 +101,11 @@ https://shahar373.github.io/SHAHAR-Navigation/
 ## Project status
 
 Milestones **M0** (modularization), **M1** (installable PWA + auto-deploy), **M2** (IndexedDB
-saved-routes library), **M1b** ("download this area" offline caching + ready PMTiles basemap) and
-**M3** (Capacitor Android APK with native GPS / file export / wake-lock, built in CI) are done. The
-original single file is kept at `reference/marine_nav_pro.html` for parity diffing. Upcoming: **M4**
-live tracking & richer marine features, **M5** polish.
+saved-routes library), **M1b** ("download this area" offline caching + ready PMTiles basemap), **M3**
+(Capacitor Android APK with native GPS / file export / wake-lock, built in CI) and **M4** (live track
+recording + wind/current-aware ETA + fuel cost in ₪) are done. The original single file is kept at
+`reference/marine_nav_pro.html` for parity diffing. Upcoming: **M5** polish (settings, accessibility,
+error handling, performance).
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
 (keyless/free data only, Hebrew RTL, offline-first, OSM tile-policy compliance, NM/knots/DM units).

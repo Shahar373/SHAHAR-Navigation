@@ -66,4 +66,12 @@ describe('computeFuel', () => {
     const usable = Math.max(0, base.now - r.reserve);
     expect(r.maxOut).toBeCloseTo(usable / r.eLnm / 2, 5);
   });
+
+  it('fuel cost in ₪ = litres × price (M4)', () => {
+    const r = computeFuel({ ...base, mode: 'lnm', pricePerL: 7.5 });
+    expect(r.requiredCost).toBeCloseTo(r.required * 7.5, 5);
+    expect(r.workingCost).toBeCloseTo(r.working * 7.5, 5);
+    const free = computeFuel({ ...base, mode: 'lnm' }); // price defaults to 0
+    expect(free.requiredCost).toBe(0);
+  });
 });

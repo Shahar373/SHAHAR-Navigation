@@ -2,6 +2,7 @@
  * M1: caches the last result and falls back to it (with an "as of" stamp) when offline. */
 
 import { $ } from '../ui/dom.js';
+import { store, emit } from '../state/store.js';
 import { saveForecast, loadForecast, formatAge } from './forecast-cache.js';
 
 const dirs = [
@@ -16,6 +17,9 @@ const dirs = [
 ];
 
 function renderWind(w, atTs) {
+  // publish to shared env for the wind-aware ETA (M4)
+  store.env.wind = { spd: w.wind_speed_10m, dir: w.wind_direction_10m };
+  emit('env:changed');
   const dn = dirs[Math.round(w.wind_direction_10m / 45) % 8];
   $('windSpd').innerHTML = w.wind_speed_10m.toFixed(1) + '<small> מ׳/ש׳</small>';
   const age = atTs ? ' · נכון ל' + formatAge(atTs) : '';
