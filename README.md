@@ -22,7 +22,9 @@ Hebrew RTL UI, a dark "nautical instrument" theme, and **only free, keyless, ope
 - **Windy** embed (wind / waves / currents).
 - **Route editor:** drag, click-to-insert, delete, rename, edit type/VHF, new / reset / extend-to-Poleg.
 - 12 NM limit line + allowed-zone shading, coast reference, 1‑NM rings.
-- Measure tool (NM), live geolocation with distance/bearing to target, day/night, fullscreen.
+- Measure tool (NM), live geolocation with distance/bearing to target, fullscreen, and a theme
+  switch — dark / **sun (daylight, high-contrast)** / night.
+- **Settings that stick:** cruise speed, fuel setup and ₪/litre are remembered between sessions.
 - **Saved-routes library** (IndexedDB): a "My Routes" drawer to save / load / rename / duplicate /
   delete multiple routes; the working route autosaves on-device and is restored next time you open.
 - Import / export: **GPX, GeoJSON, JSON**.
@@ -100,12 +102,12 @@ https://shahar373.github.io/SHAHAR-Navigation/
 
 ## Project status
 
-Milestones **M0** (modularization), **M1** (installable PWA + auto-deploy), **M2** (IndexedDB
-saved-routes library), **M1b** ("download this area" offline caching + ready PMTiles basemap), **M3**
-(Capacitor Android APK with native GPS / file export / wake-lock, built in CI) and **M4** (live track
-recording + wind/current-aware ETA + fuel cost in ₪) are done. The original single file is kept at
-`reference/marine_nav_pro.html` for parity diffing. Upcoming: **M5** polish (settings, accessibility,
-error handling, performance).
+All planned milestones are **done**: **M0** (modularization), **M1** (installable PWA + auto-deploy),
+**M2** (IndexedDB saved-routes library), **M1b** ("download this area" offline caching + ready
+PMTiles basemap), **M3** (Capacitor Android APK with native GPS / file export / wake-lock, built in
+CI), **M4** (live track recording + wind/current-aware ETA + fuel cost in ₪) and **M5** (settings +
+themes incl. sun mode, accessibility, centralized error handling). The original single file is kept
+at `reference/marine_nav_pro.html` for parity diffing.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the architecture and the binding project constraints
 (keyless/free data only, Hebrew RTL, offline-first, OSM tile-policy compliance, NM/knots/DM units).

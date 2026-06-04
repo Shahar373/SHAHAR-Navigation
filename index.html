@@ -16,7 +16,7 @@
 
     <div class="offline-banner" id="offlineBanner">מצב לא־מקוון — מוצגים נתונים אחרונים שנשמרו</div>
 
-    <button class="menu-btn" id="menuBtn">
+    <button class="menu-btn" id="menuBtn" aria-label="תפריט">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 6h18M3 12h18M3 18h18" />
       </svg>
@@ -37,7 +37,7 @@
       <span class="rec-vals">
         <b id="recDist">0.00 NM</b> · <b id="recTime">0:00:00</b> · <b id="recSog">0.0 kt</b>
       </span>
-      <button class="rec-stop" id="btnRecStop" title="עצור">■</button>
+      <button class="rec-stop" id="btnRecStop" title="עצור" aria-label="עצור">■</button>
     </div>
 
     <div class="legend" id="legend">
@@ -46,39 +46,39 @@
     </div>
 
     <div class="toolbar">
-      <button class="tbtn edit" id="btnEdit" title="מצב עריכה">
+      <button class="tbtn edit" id="btnEdit" title="מצב עריכה" aria-label="מצב עריכה">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
         </svg>
       </button>
-      <button class="tbtn" id="btnRoutes" title="המסלולים שלי">
+      <button class="tbtn" id="btnRoutes" title="המסלולים שלי" aria-label="המסלולים שלי">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         </svg>
       </button>
-      <button class="tbtn" id="btnLocate" title="המיקום שלי">
+      <button class="tbtn" id="btnLocate" title="המיקום שלי" aria-label="המיקום שלי">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3" />
           <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
           <circle cx="12" cy="12" r="8" />
         </svg>
       </button>
-      <button class="tbtn" id="btnMeasure" title="מדידת מרחק">
+      <button class="tbtn" id="btnMeasure" title="מדידת מרחק" aria-label="מדידת מרחק">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 17 17 3l4 4L7 21z" />
         </svg>
       </button>
-      <button class="tbtn" id="btnFit" title="מרכז מסלול">
+      <button class="tbtn" id="btnFit" title="מרכז מסלול" aria-label="מרכז מסלול">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
         </svg>
       </button>
-      <button class="tbtn" id="btnNight" title="לילה">
+      <button class="tbtn" id="btnNight" title="לילה" aria-label="לילה">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
         </svg>
       </button>
-      <button class="tbtn" id="btnFull" title="מסך מלא">
+      <button class="tbtn" id="btnFull" title="מסך מלא" aria-label="מסך מלא">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" />
         </svg>
@@ -451,6 +451,23 @@
         </div>
 
         <div class="card">
+          <h2><span class="dot"></span>הגדרות</h2>
+          <div class="frow" style="margin-top: 0"><span>ערכת צבעים</span></div>
+          <div class="seg" id="themeSeg">
+            <button data-theme="dark" class="active">כהה</button>
+            <button data-theme="sun">שמש (יום)</button>
+            <button data-theme="night">לילה</button>
+          </div>
+          <button class="abtn" id="btnResetSettings" style="width: 100%; margin-top: 8px">
+            איפוס הגדרות וברירות מחדל
+          </button>
+          <div class="hint">
+            מהירות השיוט, נתוני הדלק והמחיר נשמרים אוטומטית ומשוחזרים בפתיחה הבאה. "מצב שמש" מאיר את
+            הממשק לקריאוּת בשמש ישירה.
+          </div>
+        </div>
+
+        <div class="card">
           <h2><span class="dot"></span>קשר VHF ובטיחות</h2>
           <div class="vref">
             <span class="chip a">16</span><span>מצוקה/קריאה — האזן תמיד בים</span>
@@ -473,7 +490,7 @@
     <aside id="routesDrawer" class="drawer">
       <div class="drawer-head">
         <h2>📁 המסלולים שלי</h2>
-        <button class="close" id="routesClose" title="סגור">×</button>
+        <button class="close" id="routesClose" title="סגור" aria-label="סגור">×</button>
       </div>
       <div class="drawer-body">
         <button class="abtn save-route" id="btnSaveRoute">

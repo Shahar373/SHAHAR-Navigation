@@ -5,6 +5,7 @@ import { dm } from '../geo/geo.js';
 import { $ } from './dom.js';
 import { toast } from './toast.js';
 import { getRouteLine } from '../route/route.js';
+import { toggleNight } from './settings.js';
 
 export function init() {
   const rdC = $('rdCoord'),
@@ -18,10 +19,7 @@ export function init() {
     const rl = getRouteLine();
     if (rl) map.flyToBounds(rl.getBounds().pad(0.35), { duration: 0.8 });
   };
-  $('btnNight').onclick = (e) => {
-    document.body.classList.toggle('night');
-    e.currentTarget.classList.toggle('active');
-  };
+  $('btnNight').onclick = () => toggleNight();
   $('btnFull').onclick = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen &&

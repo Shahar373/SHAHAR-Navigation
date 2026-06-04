@@ -37,7 +37,7 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M4)
+## Architecture (current, after M5)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
@@ -58,7 +58,8 @@ instrument" theme. This file is binding for all future work — read it before c
   wind/current-aware per-leg SOG + route hours).
 - `src/track/` (M4) — `track.js` (pure: track distance/stats/GPX), `tracks-db.js` (IndexedDB
   'tracks' store), `recorder.js` (record/draw/save the live track + the "הקלטות" list + REC HUD).
-- `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
+- `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` — dom, toast, chrome, and (M5)
+  `settings.js`/`settings-store.js` (theme + remembered defaults) and `errors.js` (global error toast).
 - Live env: `store.env.{wind,current}` is published by `wind.js` / `marine-field.js` (emit
   `env:changed`); `legs.js` recomputes the wind/current-adjusted ETA from it.
 - `src/platform/` (M3) — native/web adapters: `geolocation.js` (Capacitor Geolocation on device,
@@ -111,4 +112,7 @@ npm test               # Vitest unit/smoke tests
   recorded tracks saved to a separate IndexedDB "הקלטות" list with GPX export + map view; per-leg
   and round-trip ETA adjusted for live wind/current (`nav/estimate.js`); per-leg minutes in the leg
   list; fuel cost in ₪. (Background geolocation chosen out by the user — foreground only.)
-- **M5** — settings, accessibility, error handling, performance.
+- **M5 (done)** — settings card with a theme switch (dark / **sun** daylight / night) and
+  auto-remembered defaults (cruise speed, fuel setup, ₪/litre) restored on startup; accessibility
+  (aria-labels on icon buttons, `:focus-visible`); a centralized error-to-toast handler
+  (`ui/errors.js`); Windy iframe already lazy-loads. Theme/settings persist in localStorage.
