@@ -29,6 +29,8 @@ export const store = {
   editMode: false,
   measuring: false,
   oneWay: 0,
+  // live environment for the wind/current-aware ETA (M4); populated by wind/marine modules.
+  env: { wind: null, current: null },
 };
 store.state.wpts.forEach((w) => (w._id = uid()));
 

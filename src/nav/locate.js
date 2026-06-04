@@ -6,13 +6,11 @@ import { store } from '../state/store.js';
 import { nm, brg } from '../geo/geo.js';
 import { $ } from '../ui/dom.js';
 import { toast } from '../ui/toast.js';
-import { startWatch } from '../platform/geolocation.js';
-import { keepAwake, allowSleep } from '../platform/wakelock.js';
+import { subscribe } from './position.js';
 
 let posMarker = null,
   accCircle = null,
-  stopWatch = null,
-  starting = false;
+  unsub = null;
 
 function onPos(p) {
   const ll = [p.coords.latitude, p.coords.longitude];
@@ -46,9 +44,8 @@ function onPos(p) {
 }
 
 function stop(btn) {
-  if (stopWatch) stopWatch();
-  stopWatch = null;
-  allowSleep();
+  if (unsub) unsub();
+  unsub = null;
   btn.classList.remove('active');
   $('navlive').classList.remove('on');
   if (posMarker) posMarker.remove();
@@ -57,20 +54,14 @@ function stop(btn) {
 }
 
 export function init() {
-  $('btnLocate').onclick = async (e) => {
+  $('btnLocate').onclick = (e) => {
     const btn = e.currentTarget;
-    if (stopWatch) return stop(btn);
-    if (starting) return;
-    starting = true;
+    if (unsub) return stop(btn);
     btn.classList.add('active');
     toast('מאתר מיקום…');
-    keepAwake(); // keep the screen on while navigating underway
-    const stopFn = await startWatch(onPos, () => {
+    unsub = subscribe(onPos, () => {
       toast('מיקום נחסם/נכשל — בדוק הרשאות מיקום');
       stop(btn);
     });
-    starting = false;
-    if (btn.classList.contains('active')) stopWatch = stopFn;
-    else stopFn(); // toggled off during async permission prompt
   };
 }

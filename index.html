@@ -32,6 +32,14 @@
       <div class="tgt" id="navTgt">—</div>
     </div>
 
+    <div class="rec-hud" id="recHud">
+      <span class="rec-dot"></span>
+      <span class="rec-vals">
+        <b id="recDist">0.00 NM</b> · <b id="recTime">0:00:00</b> · <b id="recSog">0.0 kt</b>
+      </span>
+      <button class="rec-stop" id="btnRecStop" title="עצור">■</button>
+    </div>
+
     <div class="legend" id="legend">
       <h4 id="legTitle"></h4>
       <div id="legItems"></div>
@@ -173,6 +181,9 @@
             <div class="row" style="margin-top: 8px">
               <span>זמן משוער (הלוך-חזור)</span><b id="etaRound">—</b>
             </div>
+            <div class="row" id="etaAdjRow" style="display: none; margin-top: 6px">
+              <span>מותאם לרוח/זרם</span><b id="etaAdj">—</b>
+            </div>
           </div>
         </div>
 
@@ -185,6 +196,17 @@
             ></span>
           </h2>
           <div id="legs"></div>
+        </div>
+
+        <div class="card">
+          <h2><span class="dot"></span>מעקב והקלטה (Track)</h2>
+          <button class="abtn rec-btn" id="btnRec" style="width: 100%">● התחל הקלטה</button>
+          <div class="trk-empty" id="trkEmpty">אין הקלטות עדיין. לחץ "התחל הקלטה" לפני יציאה.</div>
+          <div id="trkList"></div>
+          <div class="hint">
+            מקליט את המסלול שאתה שט (GPS), מצייר אותו על המפה ומחשב מרחק/זמן/מהירות. שמור והצא
+            ל־GPX. ההקלטה פעילה כל עוד האפליקציה פתוחה והמסך דלוק.
+          </div>
         </div>
 
         <div class="card">
@@ -389,6 +411,11 @@
             /></label>
             <label id="resFixWrap" style="display: none"
               >רזרבה (L)<input type="number" id="fResFix" value="15" min="0"
+            /></label>
+          </div>
+          <div class="fgrid">
+            <label
+              >מחיר דלק (₪ לליטר)<input type="number" id="fPrice" value="7.5" min="0" step="0.1"
             /></label>
           </div>
           <div class="frow">

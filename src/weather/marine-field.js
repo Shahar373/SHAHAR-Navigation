@@ -3,9 +3,29 @@
 
 import L from 'leaflet';
 import { map } from '../map/map.js';
+import { store, emit } from '../state/store.js';
 import { bindTog, $ } from '../ui/dom.js';
 import { toast } from '../ui/toast.js';
 import { saveForecast, loadForecast, formatAge } from './forecast-cache.js';
+
+// Vector-average the field's currents into one representative value for the wind/current
+// ETA (M4). cd is the "toward" direction, matching src/nav/estimate.js.
+function publishCurrent(field) {
+  let sx = 0,
+    sy = 0,
+    n = 0;
+  (field || []).forEach((p) => {
+    if (p.cv == null || p.cd == null) return;
+    sx += p.cv * Math.cos((p.cd * Math.PI) / 180);
+    sy += p.cv * Math.sin((p.cd * Math.PI) / 180);
+    n++;
+  });
+  if (!n) return;
+  const spd = Math.hypot(sx, sy) / n;
+  const dir = ((((Math.atan2(sy, sx) * 180) / Math.PI) % 360) + 360) % 360;
+  store.env.current = { spd, dir };
+  emit('env:changed');
+}
 
 const waveLayer = L.layerGroup(),
   currLayer = L.layerGroup();
@@ -47,11 +67,13 @@ async function fetchField() {
     fieldData = parsed;
     fieldCachedAt = null;
     saveForecast('marine', fieldData);
+    publishCurrent(fieldData);
   } catch {
     const cached = loadForecast('marine');
     if (cached) {
       fieldData = cached.data;
       fieldCachedAt = cached.at;
+      publishCurrent(fieldData);
       toast('שדה ים: נתונים שמורים · נכון ל' + formatAge(cached.at));
     } else {
       toast('שדה ים לא זמין כעת');

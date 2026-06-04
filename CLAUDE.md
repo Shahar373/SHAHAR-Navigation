@@ -37,7 +37,7 @@ instrument" theme. This file is binding for all future work — read it before c
 - Keep pure logic (geo math, fuel math, serialize/parse) **free of Leaflet/DOM-app imports** so it
   stays unit-testable — see `src/geo`, `src/fuel/fuel.js#computeFuel`, `src/io/serialize.js`.
 
-## Architecture (current, after M3)
+## Architecture (current, after M4)
 
 - `src/main.js` — entry; runs each module's `init()` in a deterministic order.
 - `src/state/` — `store.js` (state + event bus + `uid`), `defaults.js` (route data, TYPE).
@@ -53,7 +53,14 @@ instrument" theme. This file is binding for all future work — read it before c
 - `src/routes/` (M2) — `route-record.js` (pure: record shape, distance, date), `routes-db.js`
   (IndexedDB library CRUD), `draft.js` (working-route autosave in localStorage), `routes-ui.js`
   (the "המסלולים שלי" drawer + draft restore). `route.js#loadRoute` is the shared route-swap helper.
-- `src/nav/locate.js`, `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
+- `src/nav/` — `locate.js` (own-position marker + live-nav HUD), `position.js` (M4: one shared
+  geolocation watch fanned out to consumers, holds the wake-lock), `estimate.js` (M4 pure:
+  wind/current-aware per-leg SOG + route hours).
+- `src/track/` (M4) — `track.js` (pure: track distance/stats/GPX), `tracks-db.js` (IndexedDB
+  'tracks' store), `recorder.js` (record/draw/save the live track + the "הקלטות" list + REC HUD).
+- `src/measure/measure.js`, `src/pwa/offline.js`, `src/ui/` (dom, toast, chrome).
+- Live env: `store.env.{wind,current}` is published by `wind.js` / `marine-field.js` (emit
+  `env:changed`); `legs.js` recomputes the wind/current-adjusted ETA from it.
 - `src/platform/` (M3) — native/web adapters: `geolocation.js` (Capacitor Geolocation on device,
   `navigator.geolocation` on web), `files.js` (Filesystem on device, Blob download on web),
   `wakelock.js` (Screen Wake Lock — works in both). Modules pick the path via
@@ -100,6 +107,8 @@ npm test               # Vitest unit/smoke tests
   all behind `src/platform/` adapters (web build unchanged). The debug APK is built in CI
   (`android.yml`) and downloaded from the run/Release — no Android SDK needed locally.
   (Background track recording lands with M4's live tracking.)
-- **M4** — live track recording (incl. background geolocation), per-leg ETA/fuel vs live wind/current,
-  fuel cost in ₪.
+- **M4 (done)** — live track recording (foreground + wake-lock via a shared position service),
+  recorded tracks saved to a separate IndexedDB "הקלטות" list with GPX export + map view; per-leg
+  and round-trip ETA adjusted for live wind/current (`nav/estimate.js`); per-leg minutes in the leg
+  list; fuel cost in ₪. (Background geolocation chosen out by the user — foreground only.)
 - **M5** — settings, accessibility, error handling, performance.

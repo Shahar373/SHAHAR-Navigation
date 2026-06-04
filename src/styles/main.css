@@ -1143,6 +1143,83 @@ input[type='range'] {
   font-family: 'IBM Plex Mono';
 }
 
+/* track recording (M4) */
+.rec-btn {
+  background: rgba(255, 90, 95, 0.12);
+  border-color: var(--red);
+  color: var(--text);
+}
+.rec-btn.active {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  font-weight: 700;
+}
+.trk-empty {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 8px 0;
+  text-align: center;
+}
+.rec-hud {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-180%);
+  z-index: 1500;
+  background: var(--panel-solid);
+  border: 1px solid rgba(255, 90, 95, 0.6);
+  border-radius: 11px;
+  padding: 7px 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: transform 0.3s;
+  direction: ltr;
+}
+.rec-hud.on {
+  transform: translateX(-50%) translateY(0);
+}
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: recpulse 1.4s ease-in-out infinite;
+  flex: 0 0 auto;
+}
+@keyframes recpulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.rec-vals {
+  font-family: 'IBM Plex Mono';
+  font-size: 12px;
+  color: var(--text);
+}
+.rec-vals b {
+  color: var(--cyan);
+  font-weight: 500;
+}
+.rec-stop {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  flex: 0 0 auto;
+}
+
 .leaflet-popup-content-wrapper {
   background: var(--panel-solid);
   color: var(--text);

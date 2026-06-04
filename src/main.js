@@ -26,6 +26,7 @@ import { init as initRoutes } from './routes/routes-ui.js';
 import { init as initDownloadArea } from './map/download-area.js';
 import { init as initMeasure } from './measure/measure.js';
 import { init as initLocate } from './nav/locate.js';
+import { init as initRecorder } from './track/recorder.js';
 import { init as initWindy } from './weather/windy.js';
 import { init as initChrome } from './ui/chrome.js';
 import { init as initWind } from './weather/wind.js';
@@ -52,6 +53,7 @@ initIO();
 initRoutes();
 initMeasure();
 initLocate();
+initRecorder();
 initWindy();
 initChrome();
 

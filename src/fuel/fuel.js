@@ -40,6 +40,7 @@ export function computeFuel({
   resPct,
   resFix,
   D,
+  pricePerL = 0,
 }) {
   const cond = 1 + condPct / 100;
   let baseLph, Lnm;
@@ -69,7 +70,22 @@ export function computeFuel({
     maxRound = eLnm > 0 ? usable / eLnm : 0,
     maxOut = maxRound / 2;
   const go = working > 0 && now >= required;
-  return { eLnm, eLph, working, reserve, required, surplus, rangeNM, endur, maxOut, go };
+  const workingCost = working * pricePerL,
+    requiredCost = required * pricePerL;
+  return {
+    eLnm,
+    eLph,
+    working,
+    reserve,
+    required,
+    surplus,
+    rangeNM,
+    endur,
+    maxOut,
+    go,
+    workingCost,
+    requiredCost,
+  };
 }
 
 function segBind(wrap, key, st, onpick) {
@@ -94,25 +110,37 @@ function updFuel() {
     condPct = num('fCond', 0);
   $('condVal').textContent = '+' + condPct + '%';
 
-  const { eLnm, eLph, working, reserve, required, surplus, rangeNM, endur, maxOut, go } =
-    computeFuel({
-      tank,
-      now,
-      condPct,
-      mode: fuelMode.cur,
-      lph: num('fLph', 20),
-      spdLph: num('fSpd', 7),
-      lnm: num('fLnm', 1.2),
-      cruiseSpd: spdApp(),
-      fuelType: $('fFuel').value,
-      hp: num('fHp', 150),
-      load: num('fLoad', 60),
-      spdHp: num('fSpd2', 18),
-      reserveMode: resMode.cur,
-      resPct: num('fResPct', 25),
-      resFix: num('fResFix', 15),
-      D: store.oneWay * 2,
-    });
+  const {
+    eLnm,
+    eLph,
+    working,
+    reserve,
+    required,
+    surplus,
+    rangeNM,
+    endur,
+    maxOut,
+    go,
+    requiredCost,
+  } = computeFuel({
+    tank,
+    now,
+    condPct,
+    mode: fuelMode.cur,
+    lph: num('fLph', 20),
+    spdLph: num('fSpd', 7),
+    lnm: num('fLnm', 1.2),
+    cruiseSpd: spdApp(),
+    fuelType: $('fFuel').value,
+    hp: num('fHp', 150),
+    load: num('fLoad', 60),
+    spdHp: num('fSpd2', 18),
+    reserveMode: resMode.cur,
+    resPct: num('fResPct', 25),
+    resFix: num('fResFix', 15),
+    D: store.oneWay * 2,
+    pricePerL: num('fPrice', 0),
+  });
 
   // fuel bar
   const cl = (v) => Math.max(0, Math.min(100, v));
@@ -164,6 +192,7 @@ function updFuel() {
       ],
       ['שהייה (endurance)', isFinite(endur) ? hm(endur) : '—', 'var(--text)'],
       ['מרחק מרבי החוצה*', isFinite(maxOut) ? maxOut.toFixed(1) + ' מייל' : '—', 'var(--amber)'],
+      ['עלות דלק נדרש', requiredCost > 0 ? '₪' + Math.round(requiredCost) : '—', 'var(--green)'],
     ]
       .map(
         (r) =>
@@ -220,6 +249,7 @@ export function init() {
     'fResPct',
     'fResFix',
     'fCond',
+    'fPrice',
   ].forEach((id) => {
     const el = $(id);
     if (el) el.addEventListener('input', updFuel);
