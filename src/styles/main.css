@@ -1364,6 +1364,35 @@ body.night #map {
   background: #0a1822;
 }
 
+/* sun mode (M5): a light, high-contrast palette for reading in direct daylight. Only the
+ * variables change — every component already reads them. Accents are darkened for contrast
+ * on white; map tiles render normally (no night invert). */
+body.sun {
+  --ink: #dfeaf0;
+  --panel: rgba(255, 255, 255, 0.93);
+  --panel-solid: #ffffff;
+  --stroke: rgba(7, 33, 46, 0.16);
+  --stroke-2: rgba(7, 33, 46, 0.3);
+  --text: #06212e;
+  --muted: #4a6473;
+  --soft: #143240;
+  --amber: #b5760a;
+  --cyan: #0c8f88;
+  --steel: #3d6f95;
+  --green: #1f9e62;
+  --red: #e23b40;
+  --shadow: 0 14px 40px rgba(20, 50, 66, 0.22);
+}
+body.sun #side {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(232, 242, 247, 0.98));
+}
+
+/* keyboard accessibility (M5) */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
 .wp {
   position: relative;
   display: flex;

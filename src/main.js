@@ -31,8 +31,14 @@ import { init as initWindy } from './weather/windy.js';
 import { init as initChrome } from './ui/chrome.js';
 import { init as initWind } from './weather/wind.js';
 import { init as initPwa } from './pwa/offline.js';
+import { init as initErrors } from './ui/errors.js';
+import { init as initSettings } from './ui/settings.js';
 
-// 0. PWA: register service worker + offline/install UI (independent of the map)
+// 0. global error surface + restore persisted settings/theme (before first render)
+initErrors();
+initSettings();
+
+// 0b. PWA: register service worker + offline/install UI (independent of the map)
 initPwa();
 
 // 1. map must exist before anything else touches it
